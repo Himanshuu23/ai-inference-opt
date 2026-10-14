@@ -1,11 +1,7 @@
 # AI inference optimization on an RTX 2050 (4 GB)
 
 Benchmarks and profiles **ResNet-50** (torchvision, pretrained) and **BERT-base** (seq len 128) under increasing
-levels of optimization, and explains why each step helps. All code is original; **every number in this repo was
-produced by `src/bench.py` / the Nsight scripts on the machine below**. Anything that could not be measured is marked.
-
-**Test machine:** NVIDIA GeForce RTX 2050 laptop GPU (Ampere, cc 8.6, 4 GB, 50 W power cap), Windows 11 + WSL2 (Arch Linux),
-NVIDIA driver 617.42, Python 3.12.13, PyTorch 2.11.0+cu128, TensorRT 10.16.1.11, Nsight Systems / Nsight Compute from WSL.
+levels of optimization.
 
 | Config | What it is |
 |---|---|
@@ -28,10 +24,9 @@ scripts/profile_ncu.sh  Nsight Compute, one conv + one GEMM kernel at N=1
 scripts/analyze_profile.py  nsys sqlite / ncu csv -> results/profile_summary.md
 scripts/make_plots.py   results/latency.png, results/throughput.png, speedup table, README injection
 results/                results.csv, bench_log.txt, rerun_bert_A.csv (anomaly check), plots, profile_summary.md, nsys/, ncu/
-STUDY.md                interview study guide
 ```
 
-## Setup (what worked on WSL2 / Arch)
+## Setup
 
 1. `python scripts/check_env.py` lists what is present and missing. You need a recent NVIDIA driver; `nvcc` is **not**
    required (the wheels ship their own CUDA runtime).
@@ -42,10 +37,6 @@ STUDY.md                interview study guide
 4. `pip install -r requirements.txt`
 5. TensorRT: `pip install "tensorrt-cu12>=10.5,<11" --extra-index-url https://pypi.nvidia.com` (about a 4.3 GB wheel).
    `trtexec` is **not** needed: engines are built through the Python API.
-6. **Disk gotcha on WSL2:** `/tmp` is a RAM-backed tmpfs (3.8 GB here) and pip stages downloads there. Big installs fail
-   with "No space left on device" even when the disk is nearly empty. Fix: `mkdir -p ~/pip-tmp && export TMPDIR=~/pip-tmp`.
-   If a download keeps dropping, fetch the wheel with `curl -C - --retry 30 --retry-all-errors -o file.whl <url>` and
-   `pip install file.whl`.
 7. Nsight Systems (`nsys`) and Nsight Compute (`ncu`) must be on `PATH`.
 8. Put **at least 32** (ideally 48-64) real photos (JPG/PNG, varied scenes) in `data/images/`. INT8 calibration uses whole
    batches of 16, so 48 images = 3 calibration batches; without >= 32 images INT8 is skipped. Top-1 agreement is measured
@@ -55,7 +46,7 @@ STUDY.md                interview study guide
 ## Run
 
 ```bash
-bash scripts/run_all.sh                 # everything below in sequence
+bash scripts/run_all.sh                 
 # or step by step
 python -m src.bench 2>&1 | grep -v "\[TRT\]" | tee results/bench_log.txt   # full benchmark, ~15-30 min
 python -m src.bench --models resnet50 --configs A B D --batch-sizes 1 16 --iters 100   # subset

@@ -8,3 +8,4 @@ results/nsys/*.sqlite
 engines/*.calib
 data/images/*
 !data/images/.gitkeep
+STUDY.md
