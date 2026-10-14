@@ -21,27 +21,10 @@ src/profile_target.py   workload run under nsys/ncu    src/build_engines.py  pre
 scripts/check_env.py    what is installed / what you must install
 scripts/profile_nsys.sh Nsight Systems on ResNet-50 A, B, D at batch 16 -> results/nsys/ + profile_summary.md
 scripts/profile_ncu.sh  Nsight Compute, one conv + one GEMM kernel at N=1
-scripts/analyze_profile.py  nsys sqlite / ncu csv -> results/profile_summary.md
+scripts/analyze_profile.py  nsys sqlite / ncu csv
 scripts/make_plots.py   results/latency.png, results/throughput.png, speedup table, README injection
-results/                results.csv, bench_log.txt, rerun_bert_A.csv (anomaly check), plots, profile_summary.md, nsys/, ncu/
+results/                results.csv, bench_log.txt, rerun_bert_A.csv (anomaly check), plots, nsys/, ncu/
 ```
-
-## Setup
-
-1. `python scripts/check_env.py` lists what is present and missing. You need a recent NVIDIA driver; `nvcc` is **not**
-   required (the wheels ship their own CUDA runtime).
-2. **Use Python 3.12 or 3.13, not 3.14.** TensorRT 10.x wheels stop at Python 3.13; TensorRT 11.x supports 3.14 but this
-   project was written against the 10.x API (the INT8 calibrator API is deprecated and may be removed in 11.x).
-   On Arch: `sudo pacman -S uv && uv venv --seed --python 3.12 .venv && source .venv/bin/activate`.
-3. PyTorch (CUDA): `pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128`
-4. `pip install -r requirements.txt`
-5. TensorRT: `pip install "tensorrt-cu12>=10.5,<11" --extra-index-url https://pypi.nvidia.com` (about a 4.3 GB wheel).
-   `trtexec` is **not** needed: engines are built through the Python API.
-7. Nsight Systems (`nsys`) and Nsight Compute (`ncu`) must be on `PATH`.
-8. Put **at least 32** (ideally 48-64) real photos (JPG/PNG, varied scenes) in `data/images/`. INT8 calibration uses whole
-   batches of 16, so 48 images = 3 calibration batches; without >= 32 images INT8 is skipped. Top-1 agreement is measured
-   against the FP32 model's own predictions, not ground-truth labels.
-9. BERT: `bert-base-uncased` downloads from Hugging Face on first use (`--bert-model distilbert-base-uncased` if memory is tight).
 
 ## Run
 
@@ -51,8 +34,8 @@ bash scripts/run_all.sh
 python -m src.bench 2>&1 | grep -v "\[TRT\]" | tee results/bench_log.txt   # full benchmark, ~15-30 min
 python -m src.bench --models resnet50 --configs A B D --batch-sizes 1 16 --iters 100   # subset
 python scripts/make_plots.py --update-readme    # plots + fills the blocks below
-bash scripts/profile_nsys.sh            # -> results/nsys/*.nsys-rep, results/profile_summary.md
-bash scripts/profile_ncu.sh             # optional (needs GPU performance-counter access)
+bash scripts/profile_nsys.sh            # -> results/nsys/*.nsys-rep
+bash scripts/profile_ncu.sh             # (needs GPU performance-counter access)
 ```
 
 First TensorRT builds take about a minute per engine here; engines are cached in `engines/` (`--rebuild` to redo).
