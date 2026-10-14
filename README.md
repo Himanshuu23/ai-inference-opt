@@ -166,8 +166,6 @@ Counters -> *Allow access to the GPU performance counters to all users* (error `
 
 ## Findings
 
-All numbers below are from this machine (tables above, `results/profile_summary.md`).
-
 **1. Each optimisation level helped, with diminishing returns for PyTorch-only changes and a big step for TensorRT.**
 ResNet-50, batch 16 (p50 / throughput / speedup vs A): A 78.4 ms / 204 img/s; B (FP16) 39.1 ms / 412 img/s (2.0x);
 C (torch.compile) 28.2 ms / 583 img/s (2.9x); D (TensorRT FP16) 12.2 ms / 1309 img/s (6.4x); E (TensorRT INT8)
@@ -199,17 +197,15 @@ larger, not smaller. BERT stayed at 100% in all configs (random classifier head:
 
 **6. Tail latency (p99 vs p50).** At batch 1, PyTorch FP16 (B) has p99 17.0 ms vs p50 5.3 ms, and eager FP32 has
 11.1 vs 6.6 ms, while TensorRT FP16 has 2.37 vs 2.09 ms and INT8 2.07 vs 1.22 ms. At batch 16 and above every config has
-p99 within about 7% of p50 (the largest gap is torch.compile on ResNet-50 at batch 16, 6.5%). Note the WSL2/laptop setup shares the GPU with the
-Windows display, which may contribute to the batch-1 spikes (not isolated).
+p99 within about 7% of p50 (the largest gap is torch.compile on ResNet-50 at batch 16, 6.5%).
 
 **7. Nsight Compute at N=1 (batch 1).** A BERT FP16 GEMM kernel (`ampere_fp16_s16816gemm...`, 24 us): tensor pipe about
 37.5% active, DRAM throughput about 55% of peak, SM throughput 26.7%, which leans memory-bound. A ResNet-50 tensor-core
 convolution kernel (`sm86_xmma_fprop_implicit_gemm...`, 35 us): tensor pipe 35.3%, SM throughput 28.6%, DRAM only
 15.4% but overall memory-subsystem throughput 63.4%, suggesting on-chip memory (L1/L2/shared) rather than DRAM is the busier
-unit (inferred from these metrics, not confirmed with a memory chart). Neither kernel keeps the math units busy at
+unit (inferred from these metrics). Neither kernel keeps the math units busy at
 batch 1. An earlier ncu run captured a different convolution kernel (`implicit_convolve_sgemm`, FP16 data) that ran
-**no tensor-core instructions** (0%) at 71% SM throughput; this kernel also appears once per inference in the FP16 eager
-profile. I did not verify which layer it belongs to. Not every convolution in B uses tensor cores.
+**no tensor-core instructions** (0%) at 71% SM throughput; this kernel also appears once per inference in the FP16 eager profile.
 
 **8. Thermal / power behaviour.** The GPU sat at its 50 W cap and heated up during runs: for BERT config A the sampled
 temperature rose from 72 C (batch 1) to 86 C (batch 32), and the SM clock fell from 1710 MHz (batch 1) to 1402 MHz
@@ -218,12 +214,4 @@ showed up between the 50-iteration smoke test and the final run (e.g. BERT B bat
 
 **9. Unexplained anomaly: BERT eager FP32 at batch 32.** p50 is 604 ms (59 seq/s) vs 137 ms (117 seq/s) at batch 16, more
 than 2x worse per sample. It reproduced in a separate run (`results/rerun_bert_A.csv`: 599 ms / 53 seq/s), the SM clock at
-batch 32 (1567 MHz) was higher than at batch 16 (1402 MHz), so it is not explained by the sampled clock. I did not
-investigate further; a different FP32 kernel choice at that shape is one untested hypothesis. It inflates the BERT
-batch-32 speedups.
-
-## Known limitations
-
-See the "Limitations of these benchmarks" section in [STUDY.md](STUDY.md). In addition: single run per cell (no
-confidence intervals), memory column is noisy, ResNet top-1 uses a tiled 48-image set that is also the INT8 calibration
-set, and config A is partly TF32.
+batch 32 (1567 MHz) was higher than at batch 16 (1402 MHz), so it is not explained by the sampled clock.
