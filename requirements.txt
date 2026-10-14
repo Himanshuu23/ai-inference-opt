@@ -1,0 +1,10 @@
+# Install torch/torchvision FIRST with the CUDA wheel matching your driver (see README "Setup").
+# torch>=2.1, torchvision
+transformers>=4.38
+onnx>=1.15
+onnxruntime-gpu>=1.17      # optional, only used by scripts/check_env.py
+numpy
+pandas
+matplotlib
+pillow
+# TensorRT python bindings (>=8.6, 10.x recommended): see README (pip install tensorrt)

@@ -1,0 +1,148 @@
+GPU: NVIDIA GeForce RTX 2050  cc=(8, 6)  torch=2.11.0+cu128
+== resnet50 ==
+  resnet50 A bs=1   p50=6.63 ms  p99=11.11 ms  143/s  322 MB  []
+  resnet50 A bs=4   p50=20.41 ms  p99=20.57 ms  197/s  142 MB  []
+  resnet50 A bs=16  p50=78.44 ms  p99=78.75 ms  204/s  318 MB  []
+  resnet50 A bs=32  p50=144.73 ms  p99=145.02 ms  221/s  610 MB  []
+  resnet50 B bs=1   p50=5.34 ms  p99=17.03 ms  175/s  62 MB  []
+  resnet50 B bs=4   p50=11.34 ms  p99=15.61 ms  348/s  74 MB  []
+  resnet50 B bs=16  p50=39.06 ms  p99=39.39 ms  412/s  188 MB  []
+  resnet50 B bs=32  p50=78.26 ms  p99=78.79 ms  410/s  326 MB  []
+  resnet50 C bs=1   p50=3.56 ms  p99=9.29 ms  313/s  166 MB  [torch.compile (inductor, default mode)]
+  resnet50 C bs=4   p50=8.38 ms  p99=10.26 ms  505/s  74 MB  [torch.compile (inductor, default mode)]
+  resnet50 C bs=16  p50=28.19 ms  p99=30.03 ms  583/s  162 MB  [torch.compile (inductor, default mode)]
+  resnet50 C bs=32  p50=56.39 ms  p99=56.95 ms  575/s  294 MB  [torch.compile (inductor, default mode)]
+  resnet50 D bs=1   p50=2.09 ms  p99=2.37 ms  494/s  190 MB  []
+  resnet50 D bs=4   p50=3.96 ms  p99=4.12 ms  1012/s  190 MB  []
+  resnet50 D bs=16  p50=12.20 ms  p99=12.41 ms  1309/s  190 MB  []
+  resnet50 D bs=32  p50=23.70 ms  p99=24.11 ms  1347/s  210 MB  []
+[trt] INT8 calibration on 48 real images, entropy calibrator v2
+[trt] building int8 engine for resnet50 (this can take minutes on a small GPU)...
+[trt] built resnet50_int8.engine in 98s (25.4 MiB)
+  resnet50 E bs=1   p50=1.22 ms  p99=2.06 ms  772/s  400 MB  []
+  resnet50 E bs=4   p50=2.08 ms  p99=2.31 ms  1982/s  94 MB  []
+  resnet50 E bs=16  p50=5.70 ms  p99=5.88 ms  2816/s  94 MB  []
+  resnet50 E bs=32  p50=10.87 ms  p99=11.16 ms  2949/s  114 MB  []
+== bert ==
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2457.26it/s]
+[transformers] [1mBertForSequenceClassification LOAD REPORT[0m from: bert-base-uncased
+Key                                        | Status     | 
+-------------------------------------------+------------+-
+cls.predictions.transform.LayerNorm.weight | UNEXPECTED | 
+cls.predictions.transform.dense.weight     | UNEXPECTED | 
+cls.predictions.bias                       | UNEXPECTED | 
+cls.predictions.transform.dense.bias       | UNEXPECTED | 
+cls.seq_relationship.weight                | UNEXPECTED | 
+cls.predictions.transform.LayerNorm.bias   | UNEXPECTED | 
+cls.seq_relationship.bias                  | UNEXPECTED | 
+classifier.bias                            | MISSING    | 
+classifier.weight                          | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+In file included from /root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/Python.h:12,
+                 from /root/pip-tmp/tmpuysb3p19/__triton_launcher.c:7:
+/root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/pyconfig.h:1877:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1877 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /mnt/c/Users/hp/Desktop/projects/ai-inference-opt/.venv/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /root/pip-tmp/tmpuysb3p19/__triton_launcher.c:2:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+In file included from /root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/Python.h:12,
+                 from /root/pip-tmp/tmpdn0awoui/__triton_launcher.c:7:
+/root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/pyconfig.h:1877:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1877 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /mnt/c/Users/hp/Desktop/projects/ai-inference-opt/.venv/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /root/pip-tmp/tmpdn0awoui/__triton_launcher.c:2:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+In file included from /root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/Python.h:12,
+                 from /root/pip-tmp/tmp22aev1f6/__triton_launcher.c:7:
+/root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/pyconfig.h:1877:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1877 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /mnt/c/Users/hp/Desktop/projects/ai-inference-opt/.venv/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /root/pip-tmp/tmp22aev1f6/__triton_launcher.c:2:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+In file included from /root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/Python.h:12,
+                 from /root/pip-tmp/tmpbgg8ipca/__triton_launcher.c:7:
+/root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/pyconfig.h:1877:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1877 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /mnt/c/Users/hp/Desktop/projects/ai-inference-opt/.venv/lib/python3.12/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /root/pip-tmp/tmpbgg8ipca/__triton_launcher.c:2:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+  bert     A bs=1   p50=16.20 ms  p99=17.78 ms  63/s  542 MB  []
+  bert     A bs=4   p50=37.01 ms  p99=38.44 ms  109/s  470 MB  []
+  bert     A bs=16  p50=136.52 ms  p99=140.85 ms  117/s  540 MB  []
+  bert     A bs=32  p50=604.09 ms  p99=609.74 ms  59/s  656 MB  []
+  bert     B bs=1   p50=8.92 ms  p99=17.38 ms  97/s  254 MB  []
+  bert     B bs=4   p50=12.95 ms  p99=17.90 ms  316/s  232 MB  []
+  bert     B bs=16  p50=40.80 ms  p99=42.39 ms  394/s  252 MB  []
+  bert     B bs=32  p50=76.95 ms  p99=78.11 ms  416/s  296 MB  []
+  bert     C bs=1   p50=4.49 ms  p99=9.39 ms  228/s  242 MB  [torch.compile (inductor, default mode)]
+  bert     C bs=4   p50=10.48 ms  p99=11.29 ms  411/s  212 MB  [torch.compile (inductor, default mode)]
+  bert     C bs=16  p50=38.06 ms  p99=38.90 ms  430/s  242 MB  [torch.compile (inductor, default mode)]
+  bert     C bs=32  p50=71.11 ms  p99=73.11 ms  450/s  276 MB  [torch.compile (inductor, default mode)]
+  bert     D bs=1   p50=3.36 ms  p99=3.85 ms  302/s  262 MB  []
+  bert     D bs=4   p50=6.69 ms  p99=6.91 ms  597/s  262 MB  []
+  bert     D bs=16  p50=23.75 ms  p99=24.32 ms  673/s  262 MB  []
+  bert     D bs=32  p50=48.52 ms  p99=49.00 ms  659/s  262 MB  []
+
+| model | config | batch | status | p50_ms | p99_ms | throughput_per_s | device_mem_delta_mb | max_abs_diff | top1_agree_pct |
+|---|---|---|---|---|---|---|---|---|---|
+| bert | A | 1 | ok | 16.195 | 17.783 | 63.1 | 542 | 0 | 100.0 |
+| bert | A | 4 | ok | 37.011 | 38.435 | 109.1 | 470 | 0 | 100.0 |
+| bert | A | 16 | ok | 136.518 | 140.855 | 116.6 | 540 | 0 | 100.0 |
+| bert | A | 32 | ok | 604.087 | 609.740 | 59.3 | 656 | 0 | 100.0 |
+| bert | B | 1 | ok | 8.924 | 17.383 | 97.4 | 254 | 0.001352 | 100.0 |
+| bert | B | 4 | ok | 12.949 | 17.902 | 315.9 | 232 | 0.001352 | 100.0 |
+| bert | B | 16 | ok | 40.805 | 42.388 | 394.4 | 252 | 0.001352 | 100.0 |
+| bert | B | 32 | ok | 76.951 | 78.114 | 416.4 | 296 | 0.001352 | 100.0 |
+| bert | C | 1 | ok | 4.491 | 9.386 | 227.7 | 242 | 0.0007929 | 100.0 |
+| bert | C | 4 | ok | 10.483 | 11.289 | 410.8 | 212 | 0.0007929 | 100.0 |
+| bert | C | 16 | ok | 38.058 | 38.903 | 430.1 | 242 | 0.0007929 | 100.0 |
+| bert | C | 32 | ok | 71.110 | 73.109 | 449.9 | 276 | 0.0007929 | 100.0 |
+| bert | D | 1 | ok | 3.358 | 3.852 | 302.1 | 262 | 0.00253 | 100.0 |
+| bert | D | 4 | ok | 6.687 | 6.909 | 597.0 | 262 | 0.00253 | 100.0 |
+| bert | D | 16 | ok | 23.747 | 24.319 | 673.3 | 262 | 0.00253 | 100.0 |
+| bert | D | 32 | ok | 48.525 | 48.996 | 659.4 | 262 | 0.00253 | 100.0 |
+| resnet50 | A | 1 | ok | 6.633 | 11.105 | 143.0 | 322 | 0 | 100.0 |
+| resnet50 | A | 4 | ok | 20.414 | 20.568 | 197.2 | 142 | 0 | 100.0 |
+| resnet50 | A | 16 | ok | 78.436 | 78.750 | 204.2 | 318 | 0 | 100.0 |
+| resnet50 | A | 32 | ok | 144.726 | 145.023 | 221.4 | 610 | 0 | 100.0 |
+| resnet50 | B | 1 | ok | 5.340 | 17.026 | 174.9 | 62 | 0.05047 | 100.0 |
+| resnet50 | B | 4 | ok | 11.345 | 15.607 | 347.9 | 74 | 0.05047 | 100.0 |
+| resnet50 | B | 16 | ok | 39.055 | 39.395 | 411.8 | 188 | 0.05047 | 100.0 |
+| resnet50 | B | 32 | ok | 78.264 | 78.790 | 410.1 | 326 | 0.05047 | 100.0 |
+| resnet50 | C | 1 | ok | 3.558 | 9.286 | 313.4 | 166 | 0.05277 | 100.0 |
+| resnet50 | C | 4 | ok | 8.377 | 10.261 | 505.4 | 74 | 0.05277 | 100.0 |
+| resnet50 | C | 16 | ok | 28.188 | 30.035 | 582.8 | 162 | 0.05277 | 100.0 |
+| resnet50 | C | 32 | ok | 56.387 | 56.955 | 574.7 | 294 | 0.05277 | 100.0 |
+| resnet50 | D | 1 | ok | 2.090 | 2.372 | 493.8 | 190 | 0.1236 | 96.9 |
+| resnet50 | D | 4 | ok | 3.962 | 4.122 | 1012.1 | 190 | 0.1236 | 96.9 |
+| resnet50 | D | 16 | ok | 12.199 | 12.414 | 1309.1 | 190 | 0.1236 | 96.9 |
+| resnet50 | D | 32 | ok | 23.698 | 24.106 | 1347.3 | 210 | 0.1236 | 96.9 |
+| resnet50 | E | 1 | ok | 1.220 | 2.065 | 772.3 | 400 | 3.565 | 84.4 |
+| resnet50 | E | 4 | ok | 2.081 | 2.308 | 1982.1 | 94 | 3.565 | 84.4 |
+| resnet50 | E | 16 | ok | 5.701 | 5.881 | 2816.3 | 94 | 3.565 | 84.4 |
+| resnet50 | E | 32 | ok | 10.867 | 11.156 | 2948.9 | 114 | 3.565 | 84.4 |
+
+written: /mnt/c/Users/hp/Desktop/projects/ai-inference-opt/results/results.csv

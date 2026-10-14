@@ -1,0 +1,3 @@
+model,config,config_desc,batch,status,p50_ms,p99_ms,mean_ms,throughput_per_s,device_mem_delta_mb,torch_peak_alloc_mb,max_abs_diff,top1_agree_pct,acc_data,sm_clock_mhz,temp_c,power_w,gpu,notes,timestamp
+bert,A,PyTorch eager FP32,16,ok,137.263,140.217,137.426,116.3,540,495,0,100.0,builtin sentences (padded to 128),1432,81,49.88,NVIDIA GeForce RTX 2050,,2026-10-14T17:24:22
+bert,A,PyTorch eager FP32,32,ok,598.806,603.260,598.483,53.4,636,561,0,100.0,builtin sentences (padded to 128),1732,79,47.73,NVIDIA GeForce RTX 2050,,2026-10-14T17:24:22

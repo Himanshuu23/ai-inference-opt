@@ -1,0 +1,10 @@
+__pycache__/
+engines/*.engine
+engines/*.onnx
+engines/*.cache
+results/nsys/*.nsys-rep
+results/nsys/*.sqlite
+.venv/
+engines/*.calib
+data/images/*
+!data/images/.gitkeep

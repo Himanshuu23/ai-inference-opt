@@ -1,0 +1,10 @@
+==PROF== Connected to process 5539 (/root/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12)
+==PROF== Disconnected from process 5539
+"ID","Process ID","Process Name","Host Name","Kernel Name","Context","Stream","Block Size","Grid Size","Device","CC","Section Name","Metric Name","Metric Unit","Metric Value"
+"0","5539","python3.12","127.0.0.1","ampere_fp16_s16816gemm_fp16_128x64_ldg8_relu_f2f_stages_32x6_tn","1","13","(128, 1, 1)","(6, 2, 1)","0","8.6","Command line profiler metrics","dram__bytes.sum","byte","1519232"
+"0","5539","python3.12","127.0.0.1","ampere_fp16_s16816gemm_fp16_128x64_ldg8_relu_f2f_stages_32x6_tn","1","13","(128, 1, 1)","(6, 2, 1)","0","8.6","Command line profiler metrics","dram__throughput.avg.pct_of_peak_sustained_elapsed","%","55.86"
+"0","5539","python3.12","127.0.0.1","ampere_fp16_s16816gemm_fp16_128x64_ldg8_relu_f2f_stages_32x6_tn","1","13","(128, 1, 1)","(6, 2, 1)","0","8.6","Command line profiler metrics","gpu__compute_memory_throughput.avg.pct_of_peak_sustained_elapsed","%","55.86"
+"0","5539","python3.12","127.0.0.1","ampere_fp16_s16816gemm_fp16_128x64_ldg8_relu_f2f_stages_32x6_tn","1","13","(128, 1, 1)","(6, 2, 1)","0","8.6","Command line profiler metrics","gpu__time_duration.sum","ns","24384"
+"0","5539","python3.12","127.0.0.1","ampere_fp16_s16816gemm_fp16_128x64_ldg8_relu_f2f_stages_32x6_tn","1","13","(128, 1, 1)","(6, 2, 1)","0","8.6","Command line profiler metrics","sm__inst_executed_pipe_tensor_op_hmma.sum","inst","36864"
+"0","5539","python3.12","127.0.0.1","ampere_fp16_s16816gemm_fp16_128x64_ldg8_relu_f2f_stages_32x6_tn","1","13","(128, 1, 1)","(6, 2, 1)","0","8.6","Command line profiler metrics","sm__pipe_tensor_op_hmma_cycles_active.avg.pct_of_peak_sustained_active","%","37.66"
+"0","5539","python3.12","127.0.0.1","ampere_fp16_s16816gemm_fp16_128x64_ldg8_relu_f2f_stages_32x6_tn","1","13","(128, 1, 1)","(6, 2, 1)","0","8.6","Command line profiler metrics","sm__throughput.avg.pct_of_peak_sustained_elapsed","%","26.47"
