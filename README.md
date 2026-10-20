@@ -155,15 +155,6 @@ Accuracy vs FP32 baseline (64-sample set):
 Full details: [`results/profile_summary.md`](results/profile_summary.md) (top-10 kernels per config, kernel launches per
 inference, idle time between kernels, memcpy time, fusion comparison, Nsight Compute metrics).
 
-#### Profiling permissions (nsys / ncu)
-
-*Linux:* if nsys complains, `sudo sh -c 'echo 2 > /proc/sys/kernel/perf_event_paranoid'`. Nsight Compute needs GPU
-performance-counter access: run it with `sudo -E env PATH=$PATH`, or allow it for all users via
-`options nvidia NVreg_RestrictProfilingToAdminUsers=0` in `/etc/modprobe.d/` (then reboot).
-*Windows / WSL2:* NVIDIA Control Panel -> Desktop -> Enable Developer Settings, then Developer -> Manage GPU Performance
-Counters -> *Allow access to the GPU performance counters to all users* (error `ERR_NVGPUCTRPERM` otherwise), then
-`wsl --shutdown` and reopen WSL.
-
 ## Findings
 
 **1. Each optimisation level helped, with diminishing returns for PyTorch-only changes and a big step for TensorRT.**
