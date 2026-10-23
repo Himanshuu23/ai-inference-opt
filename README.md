@@ -171,6 +171,9 @@ cores (`xmma`, `h16816gemm`); there are no standalone BN or ReLU kernels. The id
 (0.365 ms vs 0.099 ms per inference), so at batch 16 the gain comes from fusion and tensor-core math, not from fewer
 launch gaps. FP16 eager (B) still runs BN and ReLU as separate kernels, which is why B stops at 2x.
 
+![PyTorch eager FP32: 220 kernel launches per inference](results/nsight_systems1.png)
+![TensorRT FP16: 58 kernel launches per inference](results/nsight_systems2.png)
+
 **3. torch.compile vs TensorRT.** `torch.compile` (Inductor ran; it did not fall back to TorchScript) beat plain FP16
 by 1.4x on ResNet-50 at batch 16 (39.1 to 28.2 ms) and by only 1.07x on BERT at batch 16, but by 2.0x on BERT at batch 1
 (8.9 to 4.5 ms), consistent with removing launch/dispatch overhead where kernels are small. TensorRT was still faster
@@ -190,13 +193,16 @@ larger, not smaller. BERT stayed at 100% in all configs (random classifier head:
 11.1 vs 6.6 ms, while TensorRT FP16 has 2.37 vs 2.09 ms and INT8 2.07 vs 1.22 ms. At batch 16 and above every config has
 p99 within about 7% of p50 (the largest gap is torch.compile on ResNet-50 at batch 16, 6.5%).
 
-**7. Nsight Compute at N=1 (batch 1).** A BERT FP16 GEMM kernel (`ampere_fp16_s16816gemm...`, 24 us): tensor pipe about
-37.5% active, DRAM throughput about 55% of peak, SM throughput 26.7%, which leans memory-bound. A ResNet-50 tensor-core
-convolution kernel (`sm86_xmma_fprop_implicit_gemm...`, 35 us): tensor pipe 35.3%, SM throughput 28.6%, DRAM only
-15.4% but overall memory-subsystem throughput 63.4%, suggesting on-chip memory (L1/L2/shared) rather than DRAM is the busier
+**7. Nsight Compute at N=1 (batch 1).** A BERT FP16 GEMM kernel (`ampere_fp16_s16816gemm...`, 24.8 us): tensor pipe about
+37.5% active, DRAM throughput about 65% of peak, SM throughput 26.7%, which leans memory-bound. A ResNet-50 tensor-core
+convolution kernel (`sm86_xmma_fprop_implicit_gemm...`, 40.8 us): tensor pipe 25.5%, SM throughput 25.6%, DRAM only
+21.5% but overall memory-subsystem throughput 66.5%, suggesting on-chip memory (L1/L2/shared) rather than DRAM is the busier
 unit (inferred from these metrics). Neither kernel keeps the math units busy at
 batch 1. An earlier ncu run captured a different convolution kernel (`implicit_convolve_sgemm`, FP16 data) that ran
 **no tensor-core instructions** (0%) at 71% SM throughput; this kernel also appears once per inference in the FP16 eager profile.
+
+![ResNet-50 conv kernel, FP16 tensor cores, batch 1](results/nsight_compute1.png)
+![BERT GEMM kernel, FP16 tensor cores, batch 1](results/nsight_compute2.png)
 
 **8. Thermal / power behaviour.** The GPU sat at its 50 W cap and heated up during runs: for BERT config A the sampled
 temperature rose from 72 C (batch 1) to 86 C (batch 32), and the SM clock fell from 1710 MHz (batch 1) to 1402 MHz
